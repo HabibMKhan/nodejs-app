@@ -1,0 +1,24 @@
+{
+  "name": "nodejs_app",
+  "version": "1.0.0",
+  "description": "Sandbox app for NodeJS",
+  "main": "app.js",
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1",
+    "start": "node app.js",
+    "dev": "nodemon app.js"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/HabibMKhan/nodejs-app.git"
+  },
+  "author": "Habib M. Khan",
+  "license": "ISC",
+  "bugs": {
+    "url": "https://github.com/HabibMKhan/nodejs-app/issues"
+  },
+  "homepage": "https://github.com/HabibMKhan/nodejs-app#readme",
+  "dependencies": {
+    "express": "^4.17.1"
+  }
+}
