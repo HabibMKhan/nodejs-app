@@ -1,0 +1,8 @@
+h1 {
+    color: #e36116;
+}
+
+ul, li {
+    list-style: none;
+    color: green;
+}

@@ -1,24 +1,16 @@
 const express = require('express');
+const path = require('path');
 
 const app = express();
 
-app.use((req, res, next) => {
-    console.log('Log 1');
-    next();
-});
-
-app.use((req, res, next) => {
-    console.log('Log 2');
-    next();
-});
+app.use(express.static(path.join(__dirname, 'public')));
 
 app.use('/users', (req, res, next) => {
-    res.send('<h1>Users List:</h1><ul><li>User1</li><li>User2</li></ul>');
+    res.sendFile(path.join(__dirname, "views", "admin.html"));
 });
 
 app.use('/', (req, res, next) => {
-    res.send('<h1>Welcome Home!</h1>');
+    res.sendFile(path.join(__dirname, "views", "shop.html"));
 });
-
 
 app.listen(3000);
