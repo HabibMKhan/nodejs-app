@@ -1,8 +1,16 @@
-const Sequelize = require('sequelize');
+const mongodb = require('mongodb');
+const MongoClient = mongodb.MongoClient;
 
-const sequelize = new Sequelize('node-complete', 'root', 'nodecomplete', {
-  dialect: 'mysql',
-  host: 'localhost'
-});
+require('dotenv').config();
 
-module.exports = sequelize;
+const mongoConnect = (callback) => {
+  MongoClient.connect(process.env.ATLAS_URI)
+  .then(result => {
+    console.log('Connected@');
+    callback(result);
+  }).catch(err => {
+    console.log(err);
+  });
+};
+
+module.exports = mongoConnect;
