@@ -3,14 +3,29 @@ const MongoClient = mongodb.MongoClient;
 
 require('dotenv').config();
 
+let _db;
+
 const mongoConnect = (callback) => {
   MongoClient.connect(process.env.ATLAS_URI)
-  .then(result => {
-    console.log('Connected@');
-    callback(result);
-  }).catch(err => {
+
+  .then(client => {
+    console.log('Connected!');
+    _db = client.db();
+    callback();
+  })
+  
+  .catch(err => {
     console.log(err);
+    throw err;
   });
 };
 
-module.exports = mongoConnect;
+const getDb = () => {
+  if (_db) {
+    return _db;
+  }
+  throw 'No database found!';
+}
+
+exports.mongoConnect = mongoConnect;
+exports.getDb = getDb;
