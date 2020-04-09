@@ -6,28 +6,64 @@ const User = require('./models/user');
 require('dotenv').config();
 
 const mongoose = require('mongoose');
+const session = require('express-session');
+const MongoDBStore = require('connect-mongodb-session')(session);
 
 const app = express();
+const store = new MongoDBStore({
+  uri: process.env.ATLAS_URI,
+  collection: 'sessions'
+});
+
 app.set('view engine', 'ejs');
 app.set('views', 'views');
 
 const adminRoutes = require('./routes/admin');
 const shopRoutes = require('./routes/shop');
+const authRoutes = require('./routes/auth');
 
 app.use(bodyParser.urlencoded({ extended: false }));
 app.use(express.static(path.join(__dirname, 'public')));
+app.use(session({
+  secret: process.env.SESSION_SECRET, 
+  resave: false, 
+  saveUninitialized: false, 
+  store
+}));
 
 app.use((req, res, next) => {
-  User.findById('5e8c28d59d410f26c8b4fc26')
-    .then(user => {
-      req.user = user;
-      next();
-    })
-    .catch(err => console.log(err));
+  if (!req.session || !req.session.user) {
+    return next();
+  }
+  User.findById(req.session.user._id)
+  .then(user => {
+    req.user = user;
+    next();
+  })
+  .catch(err => console.log(err));
+});
+
+app.use((req, res, next) => {
+  req.isLoggedIn = false;
+	let cookies = req.get('Cookie');
+  if (cookies) {
+    cookies = cookies.split('; ');
+    cookies.forEach(cookie => {
+      const key = cookie.split('=')[0];
+      if (key === 'loggedIn') {
+        const value = cookie.split('=')[1];
+        if (value === 'true') {
+          req.isLoggedIn = true;
+        }
+      }
+    });  
+  }
+	next();
 });
 
 app.use('/admin', adminRoutes);
 app.use(shopRoutes);
+app.use(authRoutes);
 
 app.use(errorController.get404);
 
