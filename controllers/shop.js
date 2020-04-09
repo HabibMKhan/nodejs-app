@@ -68,7 +68,6 @@ exports.postCart = (req, res, next) => {
   Product.findById(prodId).then(product => {
     return req.user.addToCart(product);
   }).then(result => {
-    console.log(result);
     res.redirect('/cart');
   });
 };
@@ -93,7 +92,7 @@ exports.postOrder = (req, res, next) => {
       });
       const order = new Order({
         user: {
-          name: req.user.name,
+          email: req.user.email,
           userId: req.user
         },
         products
