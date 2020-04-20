@@ -6,7 +6,6 @@ const sendgridTransport = require('nodemailer-sendgrid-transport');
 
 const User = require('../models/user');
 
-console.log('using SENDGRID_KEY', !!process.env.SENDGRID_KEY);
 const transporter = nodemailer.createTransport(sendgridTransport({
   auth: {
     api_key: process.env.SENDGRID_KEY
@@ -175,6 +174,7 @@ exports.postReset = (req, res, next) => {
   });
 }
 
+// Using emailed token, permit the user to set a new password
 exports.getNewPassword = (req, res, next) => {
   const token = req.params.token;
   User.findOne({
@@ -182,7 +182,6 @@ exports.getNewPassword = (req, res, next) => {
     resetTokenExpiration: { $gt: Date.now() } 
   })
   .then(user => {
-
     let message = req.flash('error');
     if (message.length > 0) {
       message = message[0];
@@ -202,6 +201,7 @@ exports.getNewPassword = (req, res, next) => {
   });
 };
 
+// Set the new password for a user who has a valid password reset token
 exports.postNewPassword = (req, res, next) => {
   const newPassword = req.body.password;
   const userId = req.body.userId;

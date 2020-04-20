@@ -63,6 +63,9 @@ exports.postEditProduct = (req, res, next) => {
   const updatedDesc = req.body.description;
 
   Product.findById(prodId).then(product => {
+    if (product.userId.toString() !== req.user._id.toString()) {
+      return res.redirect('/');
+    }
     product.title = updatedTitle;
     product.price = updatedPrice;
     product.description = updatedDesc;
@@ -77,7 +80,8 @@ exports.postEditProduct = (req, res, next) => {
 };
 
 exports.getProducts = (req, res, next) => {
-  Product.find()
+  // Product.find()
+  Product.find({userId: req.user._id})
     // .select('title price -_id')
     // .populate('userId')
     .then(products => {
